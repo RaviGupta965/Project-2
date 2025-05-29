@@ -46,7 +46,6 @@ function page() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, newPassword: values.newPassword }),
       });
-      console.log(res);
       const result = await res.json();
       if (res.ok) {
         setStatus("Password changed successfully!");
