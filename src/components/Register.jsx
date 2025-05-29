@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
-
+import { redirect } from "next/navigation";
 const formSchema = z
   .object({
     username: z.string().min(2).max(50),
@@ -59,6 +59,7 @@ function Register() {
       const result = await res.json();
       if (!res.ok) throw new Error(result.message);
       alert("User registered successfully");
+      redirect('/')
     } catch (err) {
       alert(err.message);
     }

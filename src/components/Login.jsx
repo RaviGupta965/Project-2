@@ -14,6 +14,8 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
+import Link from "next/link";
+import { useRouter } from 'next/navigation'
 
 const formSchema = z.object({
   username: z.string().min(2).max(50),
@@ -29,6 +31,7 @@ const formSchema = z.object({
     ),
 });
 function Login() {
+  const router=useRouter();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,6 +53,7 @@ function Login() {
       const result = await res.json();
       if (!res.ok) throw new Error(result.message);
       alert("User Logged in successfully");
+      router.push('/');
     } catch (err) {
       alert(err.message);
     }
@@ -77,7 +81,7 @@ function Login() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem>
+              <FormItem >
                 <FormLabel>Password</FormLabel>
                 <FormControl className="border-black">
                   <Input type="password" placeholder="Password" {...field} />
@@ -86,7 +90,10 @@ function Login() {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <div className="flex flex-col">
+            <Link href="/forgot-password" className="text-blue-600 underline">Forgot Password?</Link>
+            <Button type="submit">Submit</Button>
+          </div>
         </form>
       </Form>
     </div>
