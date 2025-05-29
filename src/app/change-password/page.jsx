@@ -1,11 +1,5 @@
 import React from "react";
 import { Suspense } from 'react';
-import dynamic from 'next/dynamic';
-
-const ChangePassword = dynamic(() => import('../components/change-password'), {
-  ssr: false,
-  suspense: true,
-});
 import ChangePassword from "../components/change-password";
 function page() {
   return (
