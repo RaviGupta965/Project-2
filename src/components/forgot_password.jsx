@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "./ui/button";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import {
   Form,
   FormControl,
@@ -24,7 +24,7 @@ const formSchema = z.object({
 
 function Forgot_password() {
   const router=useRouter()
-  const [generatedotp,setgeneratedotp]=useState(null);
+  const [generatedotp,setgeneratedotp]=useState("");
   const [Status,setStatus]=useState('');
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -50,25 +50,21 @@ function Forgot_password() {
       const result = await res.json();
       if (res.ok) {
         setgeneratedotp(result.otp);
-        setStatus("OTP sent successfully!");
+        alert("OTP sent successfully!");
       } else {
-        setStatus(result.error || "Failed to send OTP");
-        console.log(Status)
+        alert(result.error || "Failed to send OTP");
       }
     } catch (err) {
       setStatus("Something went wrong. Please try again.");
-      console.log(Status)
     }
   };
 
   const verifyOTP =()=>{
+    const email=form.getValues('email')
     const enteredOtp = form.getValues("otp");
-    console.log('HEYYYYYYYYY');
     if (enteredOtp === generatedotp) {
       alert("OTP verified successfully!");
-      console.log('yyayya')
-      router.push('/');
-
+      router.push(`/change-password?email=${email}`);
     } else {
       console.log("Incorrect OTP. Please try again.");
     }
