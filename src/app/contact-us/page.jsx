@@ -1,42 +1,74 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 
-
 function page() {
-
+  const [captcha, setcaptcha] = useState("");
   const [formData, setformData] = useState({
     name: "",
     email: "",
     phone: "",
     message: "",
+    captcha: "",
   });
+  const GenerateCaptcha = () => {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let newCaptcha = "";
+    for (let i = 0; i < 6; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      newCaptcha += characters[randomIndex];
+    }
+    console.log(newCaptcha);
+    setcaptcha(newCaptcha);
+  };
 
-  const onSubmit = async(e) => {
+  useEffect(() => {
+    GenerateCaptcha();
+  }, []);
+
+  const onSubmit = async (e) => {
     e.preventDefault();
     try {
-        if(formData.email=='' || formData.message=='' || formData.name==''){
-            alert('Please fill all the required Details');
-            return;
-        }
-        const res = await fetch("/api/contact-us", {
+      if (
+        formData.email == "" ||
+        formData.message == "" ||
+        formData.name == ""
+      ) {
+        alert("Please fill all the required Details");
+        return;
+      }
+      if (formData.captcha != captcha) {
+        alert("Captcha Don't match ");
+        GenerateCaptcha();
+        formData.captcha = "";
+      }
+      const res = await fetch("/api/contact-us", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username: formData.name,
           email: formData.email,
           phone: formData.phone,
-          message: formData.message
+          message: formData.message,
+          captcha: formData.captcha,
         }),
       });
 
       const result = await res.json();
       if (!res.ok) throw new Error(result.message);
+      GenerateCaptcha();
+      setformData({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+        captcha: "",
+      });
       alert("Query submitted successfully");
-
     } catch (error) {
-      console.log('ERROR OCCURED :: ',res.message)
+      console.log("ERROR OCCURED :: ", res.message);
     }
   };
 
@@ -108,6 +140,29 @@ function page() {
               rows="4"
             ></textarea>
           </div>
+          <div>
+            <div className="inline-block">
+              <label htmlFor="" className="m-1 p-1 text-black bg-white">
+                {captcha}
+              </label>
+            </div>
+            <button
+              type="button"
+              onClick={() => GenerateCaptcha()}
+              className="p-1 bg-white text-blue-700 rounded m-2"
+            >
+              Refresh
+            </button>
+          </div>
+          <input
+            className="bg-white text-black"
+            placeholder="Enter the captcha"
+            type="text"
+            onChange={handleChange}
+            name="captcha"
+            value={formData.captcha}
+          />
+
           <button
             type="submit"
             className="w-full p-3 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
