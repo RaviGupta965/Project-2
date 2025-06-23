@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer'
 
-export const sendOTP = async (email, otp) => {
+export const sendmail = async (email) => {
   const transporter = nodemailer.createTransport({
     service: 'Gmail', // or 'SendinBlue', 'Outlook', etc.
     auth: {
@@ -12,8 +12,8 @@ export const sendOTP = async (email, otp) => {
   const mailOptions = {
     from: `"Authentication System" <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: 'Your OTP for Password Reset',
-    text: `Your OTP is: ${otp}. It will expire in 10 minutes.`,
+    subject: 'Query Submitting confirmation',
+    text: `Your Query has been submitted successfully.`,
   }
 
   await transporter.sendMail(mailOptions)

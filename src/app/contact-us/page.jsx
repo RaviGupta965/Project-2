@@ -2,7 +2,6 @@
 
 import React, { useEffect } from "react";
 import { useState } from "react";
-
 function page() {
   const [captcha, setcaptcha] = useState("");
   const [formData, setformData] = useState({
